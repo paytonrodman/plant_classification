@@ -12,12 +12,8 @@ logger.info(f"PROJ_ROOT path is: {PROJ_ROOT}")
 
 DATA_DIR = PROJ_ROOT / "data"
 RAW_DATA_DIR = DATA_DIR / "raw"
+INTERIM_DATA_DIR = DATA_DIR / "interim"
 PROCESSED_DATA_DIR = DATA_DIR / "processed"
-
-TRAIN_DATA_DIR = RAW_DATA_DIR / "train"
-TEST_DATA_DIR = RAW_DATA_DIR / "test"
-VALID_DATA_DIR = RAW_DATA_DIR / "valid"
-PREDICT_DATA_DIR = RAW_DATA_DIR / "predict"
 
 MODELS_DIR = PROJ_ROOT / "models"
 

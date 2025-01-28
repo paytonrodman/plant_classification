@@ -13,7 +13,12 @@ dependencies:
   - pandas
   - numpy
   - matplotlib
+  - tensorflow
+  - scipy
+  - keras
+  - scikit-learn
   - jupyter
+  - fpdf
   - pip:
     - python-dotenv
     - mkdocs
