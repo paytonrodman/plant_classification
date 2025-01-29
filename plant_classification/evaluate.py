@@ -6,7 +6,7 @@ from tqdm import tqdm
 
 from plant_classification.config import INTERIM_DATA_DIR, MODELS_DIR, FIGURES_DIR, REPORTS_DIR
 from plant_classification.model import compile_data
-from plant_classification.evaluate import make_figures, make_statistics, make_report
+from plant_classification.evaluate import make_figures, make_statistics
 
 import keras
 import pandas as pd
