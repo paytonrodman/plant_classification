@@ -13,47 +13,49 @@ Original data is taken from [Kaggle](https://www.kaggle.com/datasets/amandam1/he
 ## Project Organization
 
 ```
-├── LICENSE                <- License for use
-├── Makefile               <- Makefile with convenience commands
-├── README.md              <- The top-level README
+├── LICENSE                <- License for use.
+├── Makefile               <- Makefile with convenience commands.
+├── README.md              <- The top-level README.
 ├── data
-│   ├── raw                <- The original raw data from Kaggle
+│   ├── raw                <- The original raw data from Kaggle.
 │   └── interim            <- The reduced images.
 │
 ├── notebooks              <- Jupyter notebooks.
 │
 ├── pyproject.toml         <- Project configuration file with package metadata for
-│                             plant_classification and configuration for tools like black
+│                             plant_classification and configuration for tools like black.
 │
 ├── reports                <- Generated analysis as HTML, PDF, LaTeX, etc.
-│   └── figures            <- Generated graphics and figures to be used in reporting
+│   └── figures            <- Generated graphics and figures to be used in reporting.
 │
 ├── environment.yml        <- The requirements file for reproducing the analysis environment, e.g.
 │                             generated with `conda env create -f environment.yml` and activated by
 │                             `conda activate plant_classification`.
 │
-├── setup.cfg              <- Configuration file for flake8
+├── setup.cfg              <- Configuration file for flake8.
 │
 └── plant_classification   <- Source code for use in this project.
     │
-    ├── __init__.py              <- Makes plant_classification a Python module
+    ├── __init__.py              <- Makes plant_classification a Python module.
     │
-    ├── config.py                <- Store useful variables and configuration
+    ├── config.py                <- Store useful variables and configuration.
     │
     ├── dataset.py               <- Reduce data.
     │
-    ├── train.py                 <- Train the CNN model
+    ├── train.py                 <- Train the CNN model.
     │
-    ├── evaluate                 <- Evaluate the model accuracy/loss and produce plots
+    ├── evaluate.py              <- Evaluate the model accuracy/loss and produce plots.
     │
-    ├── data                     <- Useful functions to generate reduced data
+    ├── predict.py               <- Use the model to make predictions of unseen images.
+    │
+    ├── data                     <- Useful functions to generate reduced data.
     │   └── reduce_data.py     
     │
-    ├── model                    <- Useful functions to generate and run model
+    ├── model                    <- Useful functions to generate and run model.
     │   ├── compile_data.py
     │   └── create_model.py
     │
-    ├── evaluate                 <- Useful functions to evaluate model and produce plots
+    ├── evaluate                 <- Useful functions to evaluate model and produce plots.
     │   ├── make_statistics.py
     │   └── make_figures.py
     │
