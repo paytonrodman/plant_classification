@@ -10,6 +10,7 @@ from plant_classification.evaluate import make_figures, make_statistics
 
 import keras
 import pandas as pd
+import os
 
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
@@ -19,14 +20,14 @@ app = typer.Typer()
 
 @app.command()
 def main(
-    model_path: Path = MODELS_DIR / "model.keras",
-    history_path: Path = MODELS_DIR / "modelhistory.csv",
+    model_type: str = 'pretrained',
+    model_path: Path = MODELS_DIR,
     figure_path: Path = FIGURES_DIR,
-    report_path: Path = REPORTS_DIR,
 ):
+
     # reload model
-    model = keras.models.load_model(model_path)
-    history = pd.read_csv(history_path)
+    model = keras.models.load_model(model_path / model_type / 'model.keras')
+    history = pd.read_csv(model_path / model_type / 'modelhistory.csv')
     history.rename(columns={"Unnamed: 0": "epoch"}, inplace=True)
 
     image_shape = (256, 256, 3) # size of images
@@ -45,8 +46,10 @@ def main(
     print(report, '\n')
 
     logger.info("Creating plots...")
-    make_figures.plot_time(history, figure_path)
-    make_figures.plot_confusion(model, test_gen, figure_path)
+    save_path = figure_path / model_type
+    os.makedirs(save_path, exist_ok=True)
+    make_figures.plot_time(history, save_path)
+    make_figures.plot_confusion(model, test_gen, save_path)
 
 
 
