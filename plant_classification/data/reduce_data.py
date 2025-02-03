@@ -20,7 +20,7 @@ def check_file_exists(input_path, output_path, overwrite_flag=0):
     import glob
 
     raw_files = []
-    for file in list(glob.glob(str(input_path)+'/*/*/*')):
+    for file in list(glob.glob(str(input_path)+'/*/*/*')) + list(glob.glob(str(input_path)+'/predict/*')):
         if file.startswith('.'): # ignore hidden files
             continue
         if file.endswith('.JPG'):
@@ -33,7 +33,7 @@ def check_file_exists(input_path, output_path, overwrite_flag=0):
     else:
         logger.info(f'Only reducing images not already present.')
         proc_files = []
-        for file in list(glob.glob(str(output_path)+'/*/*/*')):
+        for file in list(glob.glob(str(output_path)+'/*/*/*')) + list(glob.glob(str(output_path)+'/predict/*')):
             if file.startswith('.'): # ignore hidden files
                 continue
             if file.endswith('.JPG'):
