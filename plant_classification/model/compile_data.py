@@ -63,20 +63,30 @@ def create_generator(input_path, image_shape, num_classes, batch_size):
                         horizontal_flip=True,
                         vertical_flip=True
                         )
+        generator = datagen.flow_from_dataframe(
+                            dataframe=data_df,
+                            directory=None,
+                            x_col='file_path',
+                            y_col='label',
+                            target_size=image_shape[:2],
+                            batch_size=batch_size,
+                            class_mode='categorical',
+                            shuffle=True
+                            )
     else:
         # rescale the test and validation data colour values
         datagen = ImageDataGenerator(rescale=1./255)
+        generator = datagen.flow_from_dataframe(
+                            dataframe=data_df,
+                            directory=None,
+                            x_col='file_path',
+                            y_col='label',
+                            target_size=image_shape[:2],
+                            batch_size=batch_size,
+                            class_mode='categorical',
+                            shuffle=False
+                            )
 
 
-    generator = datagen.flow_from_dataframe(
-                        dataframe=data_df,
-                        directory=None,
-                        x_col='file_path',
-                        y_col='label',
-                        target_size=image_shape[:2],
-                        batch_size=batch_size,
-                        class_mode='categorical',
-                        shuffle=True
-                        )
 
     return generator
