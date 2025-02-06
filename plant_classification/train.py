@@ -6,6 +6,7 @@ from tqdm import tqdm
 import scipy as sc
 import pandas as pd
 import os
+import keras
 
 from plant_classification.config import INTERIM_DATA_DIR, MODELS_DIR
 from plant_classification.model import compile_data, create_model
@@ -18,7 +19,7 @@ app = typer.Typer()
 
 @app.command()
 def main(
-    model_type: str = 'pretrained',
+    model_type: str = 'simple',
     input_path: Path = INTERIM_DATA_DIR,
     model_path: Path = MODELS_DIR,
 ):
@@ -32,23 +33,31 @@ def main(
         epochs = 10
 
     logger.info("Generating data...")
-    train_gen = compile_data.create_generator(INTERIM_DATA_DIR / 'train', image_shape, num_classes, batch_size)
-    valid_gen = compile_data.create_generator(INTERIM_DATA_DIR / 'valid', image_shape, num_classes, batch_size)
+    train_data = compile_data.create_generator(INTERIM_DATA_DIR / 'train', image_shape, num_classes, batch_size)
+    valid_data = compile_data.create_generator(INTERIM_DATA_DIR / 'valid', image_shape, num_classes, batch_size)
     logger.success("Data generation complete.")
 
     logger.info(f"Training {model_type} model for {epochs} epochs...")
     # create model
-    model = create_model.create_model(model_type, image_shape, num_classes, print_summary=0)
+    model = create_model.create_model(model_type, image_shape, num_classes, print_summary=1)
 
     # compile model
-    create_model.compile_model(model)
+    if model_type == 'simple':
+        lr = 0.001
+    else:
+        lr = 0.001
+    create_model.compile_model(model,
+                               opt=keras.optimizers.Adam(learning_rate=lr),
+                               loss_func=keras.losses.CategoricalCrossentropy(),
+                               metrics=['accuracy'])
 
     # train model
-    history = model.fit(train_gen,
+    history = model.fit(train_data,
                         epochs=epochs,
-                        validation_data=valid_gen)
+                        validation_data=valid_data)
 
-    score = model.evaluate(valid_gen, batch_size=batch_size)
+
+    score = model.evaluate(valid_data, batch_size=batch_size)
     print("Test loss:", score[0])
     print("Test accuracy:", score[1])
 

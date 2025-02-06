@@ -14,7 +14,7 @@ def create_model(model_type, image_shape, num_classes, print_summary=0):
         bool print_summary: Boolean indicating to print model summary (default: 0)
 
     Returns:
-        keras model
+        tf.keras.Model
     """
     if model_type not in ['simple','pretrained']:
         raise ValueError("model_type must be 'simple' or 'pretrained'.")
@@ -26,6 +26,7 @@ def create_model(model_type, image_shape, num_classes, print_summary=0):
 
     if print_summary:
         model.summary()
+
     return model
 
 
@@ -39,7 +40,7 @@ def create_simple_model(image_shape, num_classes):
         int num_classes: Number of classes to classify
 
     Returns:
-        keras model
+        tf.keras.Model
     """
     keras.backend.clear_session()
 
@@ -48,26 +49,23 @@ def create_simple_model(image_shape, num_classes):
 
     # add convolution at increasing filter size
     model.add(layers.Conv2D(filters=32, kernel_size=(5, 5), padding='same', activation='relu'))
-    model.add(layers.Conv2D(filters=32, kernel_size=(3, 3), padding='same', activation='relu'))
     model.add(layers.MaxPooling2D(pool_size=(2, 2)))
     model.add(layers.BatchNormalization())
-    #model.add(layers.Dropout(0.2))
+    model.add(layers.Dropout(0.2))
 
     model.add(layers.Conv2D(filters=64, kernel_size=(3, 3), padding='same', activation='relu'))
-    model.add(layers.Conv2D(filters=64, kernel_size=(3, 3), padding='same', activation='relu'))
     model.add(layers.MaxPooling2D(pool_size=(2, 2)))
     model.add(layers.BatchNormalization())
-    #model.add(layers.Dropout(0.2))
+    model.add(layers.Dropout(0.2))
 
     model.add(layers.Conv2D(filters=128, kernel_size=(3, 3), padding='same', activation='relu'))
-    model.add(layers.Conv2D(filters=128, kernel_size=(3, 3), padding='same', activation='relu'))
     model.add(layers.MaxPooling2D(pool_size=(2, 2)))
     model.add(layers.BatchNormalization())
-    #model.add(layers.Dropout(0.2))
+    model.add(layers.Dropout(0.2))
 
     # add fully-connected layer
     model.add(layers.GlobalAveragePooling2D())
-    model.add(layers.Dense(128, activation='relu'))
+    model.add(layers.Dense(128, activation='sigmoid'))
     model.add(layers.BatchNormalization())
     model.add(layers.Dropout(0.2))
 
@@ -87,14 +85,14 @@ def init_pretrained_model(image_shape, num_classes):
         int num_classes: Number of classes to classify
 
     Returns:
-        keras model
+        tf.keras.Model
     """
 
     from tensorflow.keras.applications import MobileNetV2
 
+    # call for MobileNetV2, without the top classification layers
     base_model = MobileNetV2(input_shape=image_shape, include_top=False, weights='imagenet')
-    for layer in base_model.layers[:-4]: # don't alter base layers
-        layer.trainable = False
+    base_model.trainable = False # don't alter base layers
 
     # Add specialised training layers for our problem
     model = Sequential()
@@ -102,20 +100,25 @@ def init_pretrained_model(image_shape, num_classes):
     model.add(layers.GlobalAveragePooling2D())
     model.add(layers.Dense(128, activation='relu'))
     model.add(layers.Dense(num_classes, activation='softmax'))
+
     return model
 
 
-def compile_model(model):
+
+def compile_model(model, opt, loss_func, metrics):
     """
     A function to compile a model
 
     Args:
-        keras.model model: Model to compile
+        tf.keras.Model model: Model to compile
+        tf.keras.optimizers opt: Optimizer type
+        tf.keras.losses loss_func: Loss function
+        list of str metrics: The metrics to minimise over
 
     Returns:
-        None
+        Compiled tf.keras.Model
     """
-    opt = keras.optimizers.Adam(learning_rate=1e-6)
+
     model.compile(optimizer=opt,
-                  loss='categorical_crossentropy',
-                  metrics=['accuracy'])
+                 loss=loss_func,
+                 metrics=['accuracy'])
